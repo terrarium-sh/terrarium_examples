@@ -1,0 +1,21 @@
+hw:
+  cpus: 2
+  mem_mib: 4096
+  rootfs_mib: 4096
+
+mounts:
+  - host: .
+    guest: /work
+
+network:
+  mode: unrestricted-public
+
+hooks:
+  on_create:
+    - apk add --no-cache bash ca-certificates curl git ripgrep
+    - curl -fsSL https://chatgpt.com/codex/install.sh | CODEX_NON_INTERACTIVE=1 CODEX_HOME=/opt/codex CODEX_INSTALL_DIR=/usr/local/bin sh
+
+workload:
+  entrypoint: /usr/local/bin/codex
+  args: ["--sandbox", "danger-full-access", "--ask-for-approval", "on-request"]
+  workdir: /work
