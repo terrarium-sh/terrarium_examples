@@ -1,0 +1,26 @@
+hw:
+  cpus: 2
+  mem_mib: 4096
+  rootfs_mib: 8192
+
+mounts:
+  - host: .
+    guest: /work
+
+env:
+  # gof and the projects it generates need a newer Go than Alpine ships; let Go fetch it.
+  GOTOOLCHAIN: auto
+  # gof is installed to /opt/go/bin; your own Go cache stays in ~/go.
+  PATH: /opt/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+network:
+  mode: unrestricted-public
+
+hooks:
+  on_create:
+    - apk add --no-cache bash ca-certificates curl git go make nodejs npm
+    - GOPATH=/opt/go GOTOOLCHAIN=auto go install github.com/gofast-live/gofast-cli/v2/cmd/gof@latest
+
+workload:
+  entrypoint: /bin/bash
+  workdir: /work

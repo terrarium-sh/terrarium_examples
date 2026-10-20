@@ -4,3 +4,6 @@ unofficial/*
 official/*
 !official/README.md
 !official/*/
+
+# Secrets for env_file recipes
+.env
