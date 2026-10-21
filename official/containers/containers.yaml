@@ -1,0 +1,28 @@
+hw:
+  cpus: 2
+  mem_mib: 2048
+  rootfs_mib: 4096
+
+network:
+  mode: allowlist
+  allow:
+    - dl-cdn.alpinelinux.org:443 # setup: Alpine packages
+    - registry-1.docker.io:443 # Docker Hub
+    - auth.docker.io:443
+    - production.cloudflare.docker.com:443 # Docker Hub image layers, from either CDN
+    - production.cloudfront.docker.com:443
+  ports:
+    - "8080:80" # http://127.0.0.1:8080
+
+hooks:
+  on_create:
+    - apk add --no-cache podman
+    # The guest kernel lacks the NAT target Podman's bridge network needs; share the box's network instead.
+    - mkdir -p /etc/containers/containers.conf.d && printf '[containers]\nnetns = "host"\n' > /etc/containers/containers.conf.d/host-network.conf
+    - podman pull docker.io/library/nginx:alpine
+
+sudo: [podman]
+
+workload:
+  entrypoint: /usr/bin/sudo
+  args: ["podman", "run", "--rm", "--replace", "--name", "app", "docker.io/library/nginx:alpine"]
