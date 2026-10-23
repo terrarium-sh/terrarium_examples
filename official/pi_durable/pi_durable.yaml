@@ -1,0 +1,38 @@
+hw:
+  cpus: 2
+  mem_mib: 2048
+  rootfs_mib: 4096
+
+mounts:
+  # The app, read-only: edit agent.mjs on the host, restart the box, and the change is live.
+  - host: ./app
+    guest: /opt/agent/app
+    readonly: true
+
+volumes:
+  # The SQLite database with every conversation, and the agent's workspace. Survives `setup --rebuild`.
+  - name: data
+    guest: /data
+    size_mib: 1024
+
+env_file: .env
+
+network:
+  mode: allowlist
+  allow:
+    - dl-cdn.alpinelinux.org:443 # setup: Alpine packages
+    - registry.npmjs.org:443 # setup: pi-durable
+    - opencode.ai:443 # the model: OpenCode Go, the default OPENAI_BASE_URL
+
+hooks:
+  on_create:
+    - apk add --no-cache bash ca-certificates nodejs npm
+    # Installed next to the mounted app, so `import "@earendil-works/pi-durable"` finds /opt/agent/node_modules.
+    - npm install --prefix /opt/agent @earendil-works/pi-durable@1.4.0 @earendil-works/pi-ai@1.4.0 @earendil-works/chord@1.4.0
+  on_start:
+    - mkdir -p /data/work && chown -R terri:terri /data
+
+workload:
+  entrypoint: /usr/bin/node
+  args: ["/opt/agent/app/agent.mjs"]
+  workdir: /data/work
