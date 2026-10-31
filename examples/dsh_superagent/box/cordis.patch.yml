@@ -1,0 +1,26 @@
+# Copied to ~/.dsh/profiles/superagent/cordis.patch.yml on first start only; edit that copy afterwards.
+# Upstream: examples/profile.cordis.patch.yml.
+- id: webserver
+  config:
+    # dsh-superagent refuses any other host; start.sh relays terra's published port here.
+    host: 127.0.0.1
+    port: 3082
+# The model: OpenCode Go from pi-ai's catalog, keyed by OPENCODE_API_KEY from .env.
+- id: llm-pi-ai
+  config:
+    providers:
+      opencode-go:
+        apiKeyEnv: OPENCODE_API_KEY
+        models:
+          - id: deepseek-v4.1-flash
+- id: agent-default-model
+  config:
+    provider: opencode-go
+    model: deepseek-v4.1-flash
+- id: dsh-superagent
+  config:
+    stateDir: /home/terri/.dsh/state/superagent
+# Feishu is optional: uncomment to enable its Source, then set the bot's lark-cli on the Feishu Source.
+# Its hosts (open.feishu.cn or open.larksuite.com) must also be allowed in dsh_superagent.yaml.
+# - id: dsh-superagent-feishu
+#   disabled: false

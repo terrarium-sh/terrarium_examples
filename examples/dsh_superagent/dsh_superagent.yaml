@@ -1,0 +1,49 @@
+hw:
+  cpus: 4
+  mem_mib: 4096
+  rootfs_mib: 8192
+
+mounts:
+  # The start script and the profile patch, read-only: the agent can read them but not rewrite them.
+  - host: ./box
+    guest: /opt/box
+    readonly: true
+
+volumes:
+  # DSH profile and state (database, Ticket directories), gh-agent's sign-in and repository clones. Survives `setup --rebuild`.
+  - name: home
+    guest: /home/terri
+    size_mib: 16384
+
+env_file: .env
+
+network:
+  mode: allowlist
+  allow:
+    - dl-cdn.alpinelinux.org:443 # setup: Alpine packages
+    - registry.npmjs.org:443 # setup: dsh, pnpm and the bundle's dependencies
+    - github.com:443 # setup: the bundle; then git and gh-agent sign-in
+    - api.github.com:443 # gh-agent: notifications, comments, pull requests
+    - objects.githubusercontent.com:443 # git-lfs and attachments
+    - opencode.ai:443 # the model: OpenCode Go (opencode-go/deepseek-v4.1-flash)
+  ports:
+    - "3082" # panel at http://127.0.0.1:3082
+
+hooks:
+  on_create:
+    - apk add --no-cache bash ca-certificates curl git git-lfs github-cli jq nodejs npm socat
+    # npm caches DNS for 5 minutes but terra honors a lookup for 60 s; keep renewing it, and retry on a refused address.
+    - (while sleep 10; do nslookup registry.npmjs.org >/dev/null; done) & for i in 1 2 3; do npm install -g @deepseek-ai/dsh@0.2.1-rc.3 pnpm@11.7.0 && s=0 && break; s=1; done; kill $!; exit $s
+    # The upstream prototype, pinned: it has no releases and its settings migrate one way.
+    - mkdir -p /opt/dsh-superagent && cd /opt/dsh-superagent && git init -q && git fetch -q --depth 1 https://github.com/deepseek-ai/dsh-superagent-prototype 6337fc823ce20251c8de8085948165c81aaa701e && git checkout -q FETCH_HEAD
+    - cd /opt/dsh-superagent; (while sleep 10; do nslookup registry.npmjs.org >/dev/null; done) & for i in 1 2 3; do pnpm install --frozen-lockfile && s=0 && break; s=1; done; kill $!; [ $s = 0 ] && pnpm build
+    - chown -R terri:terri /opt/dsh-superagent
+    # The agent's own GitHub CLI, signed in apart from any other gh login (docs/006-deployment.md, Accounts).
+    - printf '#!/bin/sh\nGH_CONFIG_DIR="$HOME/.config/gh-agent" exec gh "$@"\n' > /usr/local/bin/gh-agent && chmod +x /usr/local/bin/gh-agent
+  on_start:
+    - chown terri:terri /home/terri
+
+workload:
+  entrypoint: /bin/sh
+  args: ["/opt/box/start.sh"]
+  workdir: /opt/dsh-superagent
