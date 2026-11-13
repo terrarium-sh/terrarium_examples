@@ -26,17 +26,17 @@ curl http://127.0.0.1:8080      # nginx answers
 Edit [`containers.yaml`](./containers.yaml):
 
 1. Replace `docker.io/library/nginx:alpine` in `on_create` and in
-   `workload.args`.
+   `workload.run`.
 2. Set `network.ports` to the port the image listens on, e.g. `"8080:3000"`.
-3. Add any `podman run` flags the image needs to `workload.args` before the
-   image name, e.g. `"-e", "KEY=value"` or `"-v", "/data:/data"`.
+3. Add any `podman run` flags the image needs to `workload.run` before the
+   image name, e.g. `-e KEY=value` or `-v /data:/data`.
 4. For a registry other than Docker Hub, allow its hosts in `network.allow`.
    For example, GitHub's registry needs `ghcr.io:443` and
    `pkg-containers.githubusercontent.com:443`. Run `terra containers logs` to see
    which hosts were refused.
 
-Then run `terra containers stop && terra ./containers.yaml setup --rebuild` so the
-new image is pulled.
+Then run `terra containers stop && terra ./containers.yaml setup`. The changed
+`on_create` rebuilds the box, so the new image is pulled.
 
 ## Day to day
 

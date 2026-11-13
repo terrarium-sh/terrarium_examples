@@ -149,7 +149,7 @@ terra dsh_superagent stop && terra -d
 | `terra dsh_superagent rm` | Delete the box and its volume, including the database and the agent's sign-in |
 
 **Upgrade:** wait until no Ticket is mid-turn, back up the database, change the
-pinned commit in `on_create`, then `terra dsh_superagent stop && terra setup --rebuild`.
+pinned commit in `on_create`, then `terra dsh_superagent stop && terra setup`; the changed `on_create` rebuilds the box.
 A database migrated by a newer version can't be opened by an older one.
 
 ## Know the limits

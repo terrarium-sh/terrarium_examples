@@ -35,10 +35,10 @@ hooks:
     # Its postinstall script picks the native musl binary.
     - npm install -g @opencode/cli@latest
   on_start:
-    - chown terri:terri /opencode
+    # Recursive: on_create runs with the volume mounted, and npm's postinstall leaves root-owned dirs in it.
+    - chown -R terri:terri /opencode
 
 workload:
   # The shared server every TUI, CLI and browser client in the box connects to.
-  entrypoint: /usr/local/bin/opencode
-  args: ["serve", "--service", "--hostname", "0.0.0.0", "--port", "4096"]
+  run: exec opencode serve --service --hostname 0.0.0.0 --port 4096
   workdir: /projects

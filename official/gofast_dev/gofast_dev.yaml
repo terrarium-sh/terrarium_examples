@@ -22,5 +22,5 @@ hooks:
     - GOPATH=/opt/go GOTOOLCHAIN=auto go install github.com/gofast-live/gofast-cli/v2/cmd/gof@latest
 
 workload:
-  entrypoint: /bin/bash
+  run: exec bash
   workdir: /work

@@ -33,6 +33,5 @@ hooks:
     - mkdir -p /data/work && chown -R terri:terri /data
 
 workload:
-  entrypoint: /usr/bin/node
-  args: ["/opt/agent/app/agent.mjs"]
+  run: exec node /opt/agent/app/agent.mjs
   workdir: /data/work

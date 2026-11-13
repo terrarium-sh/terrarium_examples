@@ -8,9 +8,9 @@ The box mounts this project at `/work`, provides 2 CPUs, 4 GiB of memory, and a 
 
 1. Put `codex_dev.yaml` in the project folder you want to use. The configuration mounts that folder into the box at `/work`.
 2. Create or start a Terra box using this configuration. The `on_create` hook installs `bash`, `ca-certificates`, `curl`, `git`, `ripgrep`, and Codex CLI. The first setup therefore needs network access and may take a little time.
-3. Once setup finishes, the configured entrypoint launches Codex in `/work`.
+3. Once setup finishes, the configured workload launches Codex in `/work`.
 
-If you change the `on_create` setup commands, recreate the box (or otherwise rerun its setup hook) for those changes to take effect.
+If you change the recipe, stop the box and run setup again. A changed `on_create` rebuilds the box and runs the hook again; `--rebuild` also reinstalls the latest Codex CLI.
 
 ## Sign in
 

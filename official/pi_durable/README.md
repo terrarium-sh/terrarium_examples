@@ -76,7 +76,8 @@ restart the box (`terra pi_durable stop`, then `terra`). No rebuild needed.
 - **More tools:** add `defineTool()`s to the `assistant` extension. See the
   [pi-durable README](https://github.com/earendil-works/pi/tree/main/packages/durable).
 - **Another pi-durable version:** change the pinned versions in `on_create`,
-  then `terra pi_durable stop && terra setup --rebuild`. pi-durable is
+  then `terra pi_durable stop && terra setup`; the changed `on_create`
+  rebuilds the box. pi-durable is
   experimental and its API changes between releases.
 
 ## Day to day

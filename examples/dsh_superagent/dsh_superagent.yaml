@@ -44,6 +44,5 @@ hooks:
     - chown terri:terri /home/terri
 
 workload:
-  entrypoint: /bin/sh
-  args: ["/opt/box/start.sh"]
+  run: exec sh /opt/box/start.sh
   workdir: /opt/dsh-superagent

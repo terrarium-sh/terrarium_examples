@@ -16,6 +16,5 @@ hooks:
     - curl -fsSL https://chatgpt.com/codex/install.sh | CODEX_NON_INTERACTIVE=1 CODEX_HOME=/opt/codex CODEX_INSTALL_DIR=/usr/local/bin sh
 
 workload:
-  entrypoint: /usr/local/bin/codex
-  args: ["--sandbox", "danger-full-access", "--ask-for-approval", "on-request"]
+  run: exec codex --sandbox danger-full-access --ask-for-approval on-request
   workdir: /work

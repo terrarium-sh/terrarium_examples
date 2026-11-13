@@ -43,9 +43,9 @@ The first setup needs network access and takes a little while. The box is named
 after the recipe file, `opencode_v2_dev`, and belongs to this projects folder.
 
 If you change the recipe, run `terra opencode_v2_dev stop`, then
-`terra /path/to/opencode_v2_dev.yaml setup` again. Add `--rebuild` when you
-change `on_create`, so the setup hook runs again. Rebuilding also installs the
-latest OpenCode 2. The `opencode` volume is kept.
+`terra /path/to/opencode_v2_dev.yaml setup` again. A changed `on_create`
+rebuilds the box by itself; add `--rebuild` to install the latest OpenCode 2 on
+an unchanged recipe. The `opencode` volume is kept.
 
 ## Open a project
 

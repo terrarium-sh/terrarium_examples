@@ -28,9 +28,9 @@ after the recipe file, `gofast_dev`, and belongs to this project folder.
 Press `Ctrl-\` to detach; the shell keeps running. `terra gofast_dev` attaches
 again.
 
-If you change the recipe, run `terra gofast_dev stop`, then `terra /path/to/gofast_dev.yaml setup` again. Add
-`--rebuild` when you changed `on_create`, so the setup hook runs again. That
-also installs the latest `gof`.
+If you change the recipe, run `terra gofast_dev stop`, then `terra /path/to/gofast_dev.yaml setup` again. A
+changed `on_create` rebuilds the box and runs the hook again. Add `--rebuild`
+to install the latest `gof` on an unchanged recipe.
 
 ## Sign in
 

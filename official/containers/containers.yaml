@@ -24,5 +24,4 @@ hooks:
 sudo: [podman]
 
 workload:
-  entrypoint: /usr/bin/sudo
-  args: ["podman", "run", "--rm", "--replace", "--name", "app", "docker.io/library/nginx:alpine"]
+  run: exec sudo podman run --rm --replace --name app docker.io/library/nginx:alpine
