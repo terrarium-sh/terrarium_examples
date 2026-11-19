@@ -3,14 +3,6 @@ hw:
   mem_mib: 4096
   rootfs_mib: 4096
 
-mounts:
-  # Every project OpenCode may open: run terra from the folder that holds them.
-  - host: .
-    guest: /projects
-  # OpenCode's config (opencode.json, agents, commands), editable on the host. Kept by `terra rm`.
-  - host: ./.opencode
-    guest: /config/opencode
-
 volumes:
   # OpenCode's sessions, sign-ins and state. Survives `setup --rebuild`.
   - name: opencode
@@ -29,16 +21,23 @@ network:
   ports:
     - "4096" # web UI at http://127.0.0.1:4096, after `opencode pair`
 
-hooks:
-  on_create:
+setup:
+  run:
     - apk add --no-cache bash ca-certificates curl git nodejs npm ripgrep
     # Its postinstall script picks the native musl binary.
     - npm install -g @opencode/cli@latest
-  on_start:
-    # Recursive: on_create runs with the volume mounted, and npm's postinstall leaves root-owned dirs in it.
-    - chown -R terri:terri /opencode
 
 workload:
   # The shared server every TUI, CLI and browser client in the box connects to.
   run: exec opencode serve --service --hostname 0.0.0.0 --port 4096
   workdir: /projects
+  mounts:
+    # Every project OpenCode may open: run terra from the folder that holds them.
+    - host: .
+      guest: /projects
+    # OpenCode's config (opencode.json, agents, commands), editable on the host. Kept by `terra rm`.
+    - host: ./.opencode
+      guest: /config/opencode
+  on_start:
+    # Recursive: setup runs with the volume mounted, and npm's postinstall leaves root-owned dirs in it.
+    - chown -R terri:terri /opencode

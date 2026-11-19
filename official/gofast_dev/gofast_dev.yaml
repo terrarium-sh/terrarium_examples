@@ -3,10 +3,6 @@ hw:
   mem_mib: 4096
   rootfs_mib: 8192
 
-mounts:
-  - host: .
-    guest: /work
-
 env:
   # gof and the projects it generates need a newer Go than Alpine ships; let Go fetch it.
   GOTOOLCHAIN: auto
@@ -16,11 +12,14 @@ env:
 network:
   mode: unrestricted-public
 
-hooks:
-  on_create:
+setup:
+  run:
     - apk add --no-cache bash ca-certificates curl git go make nodejs npm
     - GOPATH=/opt/go GOTOOLCHAIN=auto go install github.com/gofast-live/gofast-cli/v2/cmd/gof@latest
 
 workload:
   run: exec bash
   workdir: /work
+  mounts:
+    - host: .
+      guest: /work

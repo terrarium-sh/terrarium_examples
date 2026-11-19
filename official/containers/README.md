@@ -25,7 +25,7 @@ curl http://127.0.0.1:8080      # nginx answers
 
 Edit [`containers.yaml`](./containers.yaml):
 
-1. Replace `docker.io/library/nginx:alpine` in `on_create` and in
+1. Replace `docker.io/library/nginx:alpine` in `setup.run` and in
    `workload.run`.
 2. Set `network.ports` to the port the image listens on, e.g. `"8080:3000"`.
 3. Add any `podman run` flags the image needs to `workload.run` before the
@@ -36,7 +36,7 @@ Edit [`containers.yaml`](./containers.yaml):
    which hosts were refused.
 
 Then run `terra containers stop && terra ./containers.yaml setup`. The changed
-`on_create` rebuilds the box, so the new image is pulled.
+`setup.run` rebuilds the box, so the new image is pulled.
 
 ## Day to day
 

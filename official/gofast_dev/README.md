@@ -6,7 +6,7 @@ Start, PostgreSQL) inside a Terra box configured by
 
 The box mounts your project at `/work` and gets 2 CPUs, 4 GiB of memory and an
 8 GiB root filesystem. It can reach any public address, but not your host or
-private networks. When the box is created, its setup hook installs Go, Node.js,
+private networks. When the box is created, setup installs Go, Node.js,
 `make`, `git` and the `gof` CLI. The box opens a `bash` shell in `/work`.
 
 ## Set it up
@@ -29,7 +29,7 @@ Press `Ctrl-\` to detach; the shell keeps running. `terra gofast_dev` attaches
 again.
 
 If you change the recipe, run `terra gofast_dev stop`, then `terra /path/to/gofast_dev.yaml setup` again. A
-changed `on_create` rebuilds the box and runs the hook again. Add `--rebuild`
+changed `setup.run` rebuilds the box and runs it again. Add `--rebuild`
 to install the latest `gof` on an unchanged recipe.
 
 ## Sign in
@@ -52,7 +52,7 @@ Alpine's Go is older than GoFast needs, so `GOTOOLCHAIN=auto` lets Go download
 the version a project asks for the first time you build it.
 
 The box has no Docker or PostgreSQL. If a generated project's `make` targets
-need them, run those targets on the host, or add the packages to `on_create`.
+need them, run those targets on the host, or add the packages to `setup.run`.
 
 Other ways to work with the box:
 

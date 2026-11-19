@@ -3,12 +3,6 @@ hw:
   mem_mib: 4096
   rootfs_mib: 8192
 
-mounts:
-  # The start script and the profile patch, read-only: the agent can read them but not rewrite them.
-  - host: ./box
-    guest: /opt/box
-    readonly: true
-
 volumes:
   # DSH profile and state (database, Ticket directories), gh-agent's sign-in and repository clones. Survives `setup --rebuild`.
   - name: home
@@ -29,8 +23,8 @@ network:
   ports:
     - "3082" # panel at http://127.0.0.1:3082
 
-hooks:
-  on_create:
+setup:
+  run:
     - apk add --no-cache bash ca-certificates curl git git-lfs github-cli jq nodejs npm socat
     # npm caches DNS for 5 minutes but terra honors a lookup for 60 s; keep renewing it, and retry on a refused address.
     - (while sleep 10; do nslookup registry.npmjs.org >/dev/null; done) & for i in 1 2 3; do npm install -g @deepseek-ai/dsh@0.2.1-rc.3 pnpm@11.7.0 && s=0 && break; s=1; done; kill $!; exit $s
@@ -40,9 +34,14 @@ hooks:
     - chown -R terri:terri /opt/dsh-superagent
     # The agent's own GitHub CLI, signed in apart from any other gh login (docs/006-deployment.md, Accounts).
     - printf '#!/bin/sh\nGH_CONFIG_DIR="$HOME/.config/gh-agent" exec gh "$@"\n' > /usr/local/bin/gh-agent && chmod +x /usr/local/bin/gh-agent
-  on_start:
-    - chown terri:terri /home/terri
 
 workload:
   run: exec sh /opt/box/start.sh
   workdir: /opt/dsh-superagent
+  mounts:
+    # The start script and the profile patch, read-only: the agent can read them but not rewrite them.
+    - host: ./box
+      guest: /opt/box
+      readonly: true
+  on_start:
+    - chown terri:terri /home/terri

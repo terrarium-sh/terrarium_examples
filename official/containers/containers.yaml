@@ -14,14 +14,13 @@ network:
   ports:
     - "8080:80" # http://127.0.0.1:8080
 
-hooks:
-  on_create:
+setup:
+  run:
     - apk add --no-cache podman
     # The guest kernel lacks the NAT target Podman's bridge network needs; share the box's network instead.
     - mkdir -p /etc/containers/containers.conf.d && printf '[containers]\nnetns = "host"\n' > /etc/containers/containers.conf.d/host-network.conf
     - podman pull docker.io/library/nginx:alpine
 
-sudo: [podman]
-
 workload:
+  sudo: [podman]
   run: exec sudo podman run --rm --replace --name app docker.io/library/nginx:alpine

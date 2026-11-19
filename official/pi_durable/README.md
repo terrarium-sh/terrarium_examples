@@ -75,8 +75,8 @@ restart the box (`terra pi_durable stop`, then `terra`). No rebuild needed.
   `openrouter.ai:443`.
 - **More tools:** add `defineTool()`s to the `assistant` extension. See the
   [pi-durable README](https://github.com/earendil-works/pi/tree/main/packages/durable).
-- **Another pi-durable version:** change the pinned versions in `on_create`,
-  then `terra pi_durable stop && terra setup`; the changed `on_create`
+- **Another pi-durable version:** change the pinned versions in `setup.run`,
+  then `terra pi_durable stop && terra setup`; the changed `setup.run`
   rebuilds the box. pi-durable is
   experimental and its API changes between releases.
 

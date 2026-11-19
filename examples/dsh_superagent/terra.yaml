@@ -1,2 +1,2 @@
 boxes:
-  superagent: ./dsh_superagent.yaml
+  dsh_superagent: ./dsh_superagent.yaml

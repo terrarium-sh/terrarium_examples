@@ -2,15 +2,15 @@
 
 This README was created with **Codex**, running inside a **Terra box** configured by [`codex_dev.yaml`](./codex_dev.yaml).
 
-The box mounts this project at `/work`, provides 2 CPUs, 4 GiB of memory, and a 4 GiB root filesystem, and has unrestricted public network access. When the box is created, its setup hook installs common command-line tools and Codex CLI. Codex starts in `/work` with the sandbox and approval settings defined in the configuration.
+The box mounts this project at `/work`, provides 2 CPUs, 4 GiB of memory, and a 4 GiB root filesystem, and has unrestricted public network access. When the box is created, setup installs common command-line tools and Codex CLI. Codex starts in `/work` with the sandbox and approval settings defined in the configuration.
 
 ## Set it up
 
 1. Put `codex_dev.yaml` in the project folder you want to use. The configuration mounts that folder into the box at `/work`.
-2. Create or start a Terra box using this configuration. The `on_create` hook installs `bash`, `ca-certificates`, `curl`, `git`, `ripgrep`, and Codex CLI. The first setup therefore needs network access and may take a little time.
+2. Create or start a Terra box using this configuration. `setup.run` installs `bash`, `ca-certificates`, `curl`, `git`, `ripgrep`, and Codex CLI. The first setup therefore needs network access and may take a little time.
 3. Once setup finishes, the configured workload launches Codex in `/work`.
 
-If you change the recipe, stop the box and run setup again. A changed `on_create` rebuilds the box and runs the hook again; `--rebuild` also reinstalls the latest Codex CLI.
+If you change the recipe, stop the box and run `terra ./codex_dev.yaml setup` again. A changed `setup.run` rebuilds the box and runs it again; `--rebuild` also reinstalls the latest Codex CLI.
 
 ## Sign in
 
